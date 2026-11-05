@@ -3,12 +3,12 @@
 
 import { useState } from "react";
 import {
-  ArrowUpRight,
   Mail,
   Phone,
   MapPin,
   Send,
   MessageCircle,
+  ArrowUpRight,
 } from "lucide-react";
 
 export default function Contact() {
@@ -21,6 +21,8 @@ export default function Contact() {
     message: "",
   });
 
+  const [status, setStatus] = useState("idle");
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -30,28 +32,47 @@ export default function Contact() {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Replace this with your actual business email address.
-    const recipient = "YOUR_EMAIL_ADDRESS";
+    setStatus("loading");
 
-    const subject = encodeURIComponent(
-      `Website enquiry from ${form.name}`
-    );
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
+          subject: `New Website Enquiry from ${form.name}`,
+          from_name: "Web Studio Website",
+          ...form,
+          botcheck: "",
+        }),
+      });
 
-    const body = encodeURIComponent(
-      `Name: ${form.name}
-Email: ${form.email}
-Phone: ${form.phone}
-Service: ${form.service}
-Budget: ${form.budget}
+      const result = await response.json();
 
-Project Details:
-${form.message}`
-    );
+      if (result.success) {
+        setStatus("success");
 
-    window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+        setForm({
+          name: "",
+          email: "",
+          phone: "",
+          service: "",
+          budget: "",
+          message: "",
+        });
+      } else {
+        setStatus("error");
+      }
+    } catch (error) {
+      console.error("Contact form error:", error);
+      setStatus("error");
+    }
   };
 
   const inputClass =
@@ -65,7 +86,6 @@ ${form.message}`
       <div className="pointer-events-none absolute -right-40 top-10 h-[500px] w-[500px] rounded-full border border-white/[0.05]" />
 
       <div className="container-custom relative z-10">
-        {/* Heading */}
         <div className="mb-16 max-w-3xl">
           <span className="text-xs font-bold uppercase tracking-[0.25em] text-coral">
             / Let&apos;s work together
@@ -86,7 +106,6 @@ ${form.message}`
         </div>
 
         <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
-          {/* Contact information */}
           <div>
             <h3 className="font-heading text-2xl font-bold">
               Let&apos;s start a conversation.
@@ -153,7 +172,6 @@ ${form.message}`
             </div>
           </div>
 
-          {/* Enquiry form */}
           <form
             onSubmit={handleSubmit}
             className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 md:p-9"
@@ -165,6 +183,15 @@ ${form.message}`
             <p className="mt-2 text-sm text-white/40">
               Fill in the details below and we&apos;ll get back to you.
             </p>
+
+            {/* Honeypot spam protection */}
+            <input
+              type="checkbox"
+              name="botcheck"
+              className="hidden"
+              tabIndex="-1"
+              autoComplete="off"
+            />
 
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
               <div>
@@ -291,17 +318,30 @@ ${form.message}`
 
             <button
               type="submit"
-              className="group mt-7 flex w-full items-center justify-center gap-3 rounded-xl bg-coral px-6 py-4 text-sm font-bold text-white transition-all duration-300 hover:bg-white hover:text-charcoal"
+              disabled={status === "loading"}
+              className="group mt-7 flex w-full items-center justify-center gap-3 rounded-xl bg-coral px-6 py-4 text-sm font-bold text-white transition-all duration-300 hover:bg-white hover:text-charcoal disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Send Project Enquiry
+              {status === "loading" ? "Sending..." : "Send Project Enquiry"}
               <Send
                 size={17}
                 className="transition-transform group-hover:translate-x-1"
               />
             </button>
 
+            {status === "success" && (
+              <p role="status" className="mt-4 text-center text-sm text-green-400">
+                Thank you! Your enquiry has been sent successfully.
+              </p>
+            )}
+
+            {status === "error" && (
+              <p role="alert" className="mt-4 text-center text-sm text-red-400">
+                Something went wrong. Please try again.
+              </p>
+            )}
+
             <p className="mt-4 text-center text-xs text-white/30">
-              Your project details will be sent through your email app.
+              Your enquiry will be delivered directly to our email.
             </p>
           </form>
         </div>
