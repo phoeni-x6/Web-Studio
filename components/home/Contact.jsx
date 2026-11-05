@@ -161,7 +161,7 @@ export default function Contact() {
                   </p>
 
                   <p className="mt-2 text-sm font-medium">
-                    YOUR_EMAIL_ADDRESS
+                   SL.webstudioz@gmail.com
                   </p>
                 </div>
               </div>
@@ -177,7 +177,7 @@ export default function Contact() {
                   </p>
 
                   <p className="mt-2 text-sm font-medium">
-                    YOUR_PHONE_NUMBER
+                    +94 78 860 7769
                   </p>
                 </div>
               </div>
@@ -193,7 +193,7 @@ export default function Contact() {
                   </p>
 
                   <p className="mt-2 text-sm font-medium">
-                    Sri Lanka
+                    Makola South, Makola ,Sri Lanka
                   </p>
                 </div>
               </div>

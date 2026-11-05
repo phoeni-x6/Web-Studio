@@ -121,21 +121,21 @@ export default function Footer() {
               <div className="flex items-start gap-3">
                 <Mail size={17} className="mt-1 shrink-0 text-coral" />
                 <span className="text-sm leading-6 text-white/50">
-                  YOUR_EMAIL_ADDRESS
+                  SL.webstudioz@gmail.com
                 </span>
               </div>
 
               <div className="flex items-start gap-3">
                 <Phone size={17} className="mt-1 shrink-0 text-coral" />
                 <span className="text-sm leading-6 text-white/50">
-                  YOUR_PHONE_NUMBER
+                 +94 78 860 7769
                 </span>
               </div>
 
               <div className="flex items-start gap-3">
                 <MapPin size={17} className="mt-1 shrink-0 text-coral" />
                 <span className="text-sm leading-6 text-white/50">
-                  Sri Lanka
+                  Makola South, Makola ,Sri Lanka
                 </span>
               </div>
             </div>
